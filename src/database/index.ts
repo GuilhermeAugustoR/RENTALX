@@ -4,9 +4,10 @@ interface IOptions {
   host: string;
 }
 
-getConnectionOptions().then(options => {
+getConnectionOptions().then((options) => {
   const newOptions = options as IOptions;
-  newOptions.host = 'rentx';
+  newOptions.host = "rentx";
+
   createConnection({
     ...options,
   });
