@@ -4,6 +4,8 @@ import swaggerUi from "swagger-ui-express";
 import Event from "events";
 
 import { setupDatabase } from  "./database";
+import "./shared/container";
+
 import swaggerFile from "./swagger.json";
 
 const startupEvent = new Event();
