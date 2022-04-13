@@ -18,6 +18,7 @@ class CategoriesRepository implements ICategoriesRepository {
       description,
       name,
     });
+    
     await this.repository.save(category);
   }
 

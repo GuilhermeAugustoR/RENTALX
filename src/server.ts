@@ -1,16 +1,31 @@
 import "reflect-metadata";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
+import Event from "events";
+
+import { setupDatabase } from  "./database";
 import swaggerFile from "./swagger.json";
-import { router } from "./routes";
-import "./database";
 
-const app = express();
+const startupEvent = new Event();
 
-app.use(express.json());
+startupEvent.on('ok', async () => {
+    const { router } = await import("./routes");
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+    const app = express();
 
-app.use(router);
+    app.use(express.json());
 
-app.listen(3000, () => console.log("Server is running!"));
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
+    app.use(router);
+
+    app.listen(3000, () => console.log("Server is running!"));
+})
+
+async function start(){
+    await setupDatabase();
+
+    startupEvent.emit("ok");
+}
+
+start();
