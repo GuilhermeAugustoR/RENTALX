@@ -1,33 +1,48 @@
 import "reflect-metadata";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
+import "express-async-errors";
 import swaggerUi from "swagger-ui-express";
 import Event from "events";
 
-import { setupDatabase } from  "./database";
+import { setupDatabase } from "./database";
 import "./shared/container";
 
 import swaggerFile from "./swagger.json";
+import { AppError } from "./errors/AppError";
 
 const startupEvent = new Event();
 
-startupEvent.on('ok', async () => {
-    const { router } = await import("./routes");
+startupEvent.on("ok", async () => {
+  const { router } = await import("./routes");
 
-    const app = express();
+  const app = express();
 
-    app.use(express.json());
+  app.use(express.json());
 
-    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-    app.use(router);
+  app.use(router);
 
-    app.listen(3000, () => console.log("Server is running!"));
-})
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({
+        message: err.message,
+      });
+    }
 
-async function start(){
-    await setupDatabase();
+    return res.status(500).json({
+      status: "error",
+      message: `Internal server error: ${err.message}`,
+    });
+  });
 
-    startupEvent.emit("ok");
+  app.listen(3000, () => console.log("Server is running!"));
+});
+
+async function start() {
+  await setupDatabase();
+
+  startupEvent.emit("ok");
 }
 
 start();
