@@ -4,11 +4,11 @@ import "express-async-errors";
 import swaggerUi from "swagger-ui-express";
 import Event from "events";
 
-import { setupDatabase } from "./database";
+import { setupDatabase } from "../typeorm";
 import "@shared/container";
 
-import swaggerFile from "./swagger.json";
-import { AppError } from "@errors/AppError";
+import swaggerFile from "../../../swagger.json";
+import { AppError } from "@shared/errors/AppError";
 
 const startupEvent = new Event();
 
