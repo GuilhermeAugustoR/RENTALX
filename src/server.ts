@@ -5,10 +5,10 @@ import swaggerUi from "swagger-ui-express";
 import Event from "events";
 
 import { setupDatabase } from "./database";
-import "./shared/container";
+import "@shared/container";
 
 import swaggerFile from "./swagger.json";
-import { AppError } from "./errors/AppError";
+import { AppError } from "@errors/AppError";
 
 const startupEvent = new Event();
 
