@@ -4,7 +4,7 @@ import "express-async-errors";
 import swaggerUi from "swagger-ui-express";
 import Event from "events";
 
-import { setupDatabase } from "../typeorm";
+import createConnection from "../typeorm";
 import "@shared/container";
 
 import swaggerFile from "../../../swagger.json";
@@ -40,7 +40,7 @@ startupEvent.on("ok", async () => {
 });
 
 async function start() {
-  await setupDatabase();
+  await createConnection();
 
   startupEvent.emit("ok");
 }

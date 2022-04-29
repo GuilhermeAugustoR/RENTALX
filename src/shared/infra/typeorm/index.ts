@@ -1,14 +1,29 @@
-import { createConnection, getConnectionOptions ,ConnectionOptions} from "typeorm";
+import {
+  createConnection,
+  getConnectionOptions,
+  ConnectionOptions,
+  Connection,
+} from "typeorm";
 
-export async function setupDatabase() {
-  const options = await getConnectionOptions();
+// export async function setupDatabase() {
+//   const options = await getConnectionOptions();
 
-  console.log('establishing connection');
+//   console.log("establishing connection");
 
-  await createConnection({
-    ...options,
-    host: "database_ignite",
-  } as ConnectionOptions)
+//   await createConnection({
+//     ...options,
+//     host: "database_ignite",
+//   } as ConnectionOptions);
 
-  console.log('connection established');
-}
+//   console.log("connection established");
+// }
+
+export default async (host = "database_ignite"): Promise<Connection> => {
+  const defaultOptions = await getConnectionOptions();
+
+  return createConnection(
+    Object.assign(defaultOptions, {
+      host,
+    })
+  );
+};
