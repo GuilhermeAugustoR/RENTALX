@@ -16,10 +16,8 @@ class CreateRentalUseCase {
   constructor(
     @inject("RentalsRepository")
     private rentalsRepository: IRentalsRepository,
-
     @inject("DayjsDateProvider")
     private dateProvider: IDateProvider,
-
     @inject("CarsRepository")
     private carsRepository: ICarsRepository
   ) {}
@@ -36,7 +34,7 @@ class CreateRentalUseCase {
     );
 
     if (carUnavailable) {
-      throw new AppError("Car is Unavailable");
+      throw new AppError("Car is unavailable");
     }
 
     const rentalOpenToUser = await this.rentalsRepository.findOpenRentalByUser(
@@ -55,7 +53,7 @@ class CreateRentalUseCase {
     );
 
     if (compare < minimumHour) {
-      throw new AppError("Invalid return date!");
+      throw new AppError("Invalid return time!");
     }
 
     const rental = await this.rentalsRepository.create({
