@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { v4 as uuidV4 } from "uuid";
+import { resolve } from "path";
 import { IUsersRepository } from "@modules/accounts/repositories/IUsersRepository";
 import { IUsersTokensRepository } from "@modules/accounts/repositories/IUserTokensRepository";
 import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
@@ -24,6 +25,15 @@ class SendForgotPasswordMailUseCase {
   async execute(email: string): Promise<void> {
     const user = await this.usersRepository.findByEmail(email);
 
+    const tampletePath = resolve(
+      __dirname,
+      "..",
+      "..",
+      "views",
+      "emails",
+      "forgotPassword.hbs"
+    );
+
     if (!user) {
       throw new Error("User does not exists");
     }
@@ -38,10 +48,16 @@ class SendForgotPasswordMailUseCase {
       expires_date,
     });
 
+    const variables = {
+      name: user.name,
+      link: `${process.env.FOROGOT_MAIL_URL}${token}`,
+    };
+
     await this.mailProvider.sendMail(
       email,
       "Recuperação de senha",
-      `Para recuperar sua senha acesse o link:${token}`
+      variables,
+      tampletePath
     );
   }
 }
